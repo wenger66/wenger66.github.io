@@ -17,7 +17,7 @@
 <meta property="og:description" content="Redis Geo功能的使用场景">
 <meta property="og:locale" content="default">
 <meta property="og:image" content="http://yoursite.com/2019/05/05/geo-redis/geo-1.png">
-<meta property="og:updated_time" content="2019-05-05T10:45:12.503Z">
+<meta property="og:updated_time" content="2019-05-06T12:20:08.511Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="演说-Redis 3.2新增的Geo功能">
 <meta name="twitter:description" content="Redis Geo功能的使用场景">
@@ -186,7 +186,7 @@ GEODIST             //计算两个位置之间的距离
 GEORADIUS           //根据经纬度值来查询附近的位置
 GEORADIUSBYMEMBER   //根据位置名称来查询附近的位置
 </code></pre><p>Geo功能的使用场景是实现“附近的人”、“附近的餐馆”、“附近的xx”，这个很多文章都会写到，本文通过实验来看看“附近的xx”用数据库实现有什么问题</p>
-<p>我们通过基于SpringBoot的程序来模拟100万个Position，该实体包括名称、经度、纬度3个字段</p>
+<p>我们通过基于SpringBoot的程序来模拟50多万个Position，该实体包括名称、经度、纬度3个字段</p>
 <pre><code>@Entity
 public class Position {
     public Position(String name, Double longitude, Double latitude) {
@@ -214,19 +214,30 @@ private void produceNoSqlData(Position position) {
     redisTemplate.opsForGeo().add(&quot;position&quot;, new Point(position.getLongitude(), position.getLatitude()), position.getName());
 }
 </code></pre><p>通过SQL语句查询ZTE（118.779328,31.996453）附近的位置，不断缩小半径，直到符合用户需求为止</p>
-<pre><code>例如10万条数据
-select * from position where 118.779328-0.1 &lt; longitude and longitude &lt;118.779328 +0.1 and 31.996453-0.1&lt;latitude and latitude&lt;31.996453 +0.1 limit 100;  ------返回3529条记录
-select * from position where 118.779328-0.01 &lt; longitude and longitude &lt;118.779328 +0.01 and 31.996453-0.01&lt;latitude and latitude&lt;31.996453 +0.01 limit 100;  -------返回38条记录
-select * from position where 118.779328-0.005 &lt; longitude and longitude &lt;118.779328 +0.005 and 31.996453-0.005&lt;latitude and latitude&lt;31.996453 +0.005;  -------返回9条记录
+<pre><code>例如50万条数据
+select * from position where 118.779328-0.1 &lt; longitude and longitude &lt;118.779328 +0.1 and 31.996453-0.1&lt;latitude and latitude&lt;31.996453 +0.1; 
++--------+--------------------+--------------------+----------+
+18743 rows in set (0.40 sec)
+
+
+select * from position where 118.779328-0.01 &lt; longitude and longitude &lt;118.779328 +0.01 and 31.996453-0.01&lt;latitude and latitude&lt;31.996453 +0.01;  
++--------+--------------------+--------------------+----------+
+184 rows in set (0.32 sec)
+
+select * from position where 118.779328-0.005 &lt; longitude and longitude &lt;118.779328 +0.005 and 31.996453-0.005&lt;latitude and latitude&lt;31.996453 +0.005; 
++--------+--------------------+--------------------+----------+
+48 rows in set (0.31 sec)
 </code></pre><p>也可以把距离计算出来排序</p>
 <pre><code>select name, longitude, latitude 
 from (
 select name, longitude, latitude,(longitude-118.779328) as longdiff,(latitude-31.996453) as latdiff from position ) t
 where longdiff&gt;0 and latdiff&gt;0
 order by t.longdiff, t.latdiff limit 10;
-</code></pre><p>这些方法有2个问题：</p>
++----------+--------------------+--------------------+
+10 rows in set (0.56 sec)
+</code></pre><p>这些方法有3个问题：</p>
 <ol>
-<li>速度慢。我们还是100万数据，实际的位置可能更大</li>
+<li>速度慢。我们还是50万数据，实际的位置可能更大</li>
 <li>不准确。地球是个椭圆，是二维数据，不是一维数据，很难说0.1、0.01、0.005这些魔数是否正确</li>
 <li>不灵活。如果想灵活就需要多层嵌套SQL，例如查询附近1公里的位置等等</li>
 </ol>
@@ -380,6 +391,15 @@ order by t.longdiff, t.latdiff limit 10;
   
 <nav id="article-nav">
   
+    <a href="/2019/05/06/learning-pyramid/" id="article-nav-newer" class="article-nav-link-wrap">
+      <i class="icon-circle-left"></i>
+      <div class="article-nav-title">
+        
+          图说-学习金字塔
+        
+      </div>
+    </a>
+  
   
     <a href="/2019/04/29/circuit/" id="article-nav-older" class="article-nav-link-wrap">
       <div class="article-nav-title">图说-断路器原理</div>
@@ -525,6 +545,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">3.2</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">学习方法</a>
               </li>
             
             <div class="clearfix"></div>
