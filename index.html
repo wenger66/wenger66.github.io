@@ -158,6 +158,113 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-goreplay" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/08/goreplay/">图说-GoReplay</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/08/goreplay/" class="archive-article-date">
+  	<time datetime="2019-05-08T07:41:35.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-08</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/2019/05/08/goreplay/goreplay-1.png" width="800" hegiht="800"></p>
+<pre><code>GoReplay是一个开源的网络监控工具，可以录制真实的流量，并回放在其他环境中，用来做影子测试，负载测试，或用于对真实的流量进行分析和监控
+官网：https://goreplay.org/
+Github：https://github.com/buger/goreplay
+</code></pre><p>上面这张图是GoReplay的原理图，分为上下两部分</p>
+<p>上半部分，从流量录制回放场景的角度看</p>
+<ul>
+<li>Client给Server发送的Request被GoReplay录制（Capture）</li>
+<li>GoReplay将录制的请求复制一份，发送给另一个Server。这个Server可以理解为真实环境的影子、拷贝，即图中的QA env</li>
+<li>GoReplay不仅可以录制Request，还可以录制Response，这样就可以对多个环境的Response进行比较</li>
+</ul>
+<p>当然如果只是这样，显得GoReplay不够高大上，于是还有这张图的下半部分</p>
+<p>下半部分，从GoReplay提供功能的角度看</p>
+<ul>
+<li>GoReplay可以只录制指定规则的请求，即Filter</li>
+<li>GoReplay可以改写录制请求的任何部分，例如增加一个Parameter，改写一个Header等等，即Rewrite</li>
+<li>GoReplay可以通过中间件进行自由处理请求和响应，虽然GoReplay是Go语言编写的，但是它默认的中间件实现是NodeJS写的，而且支持多种语言，Github上也提供了多个中间件的例子，参考<a href="https://github.com/buger/goreplay/tree/master/examples/middleware" target="_blank" rel="noopener">这里</a></li>
+<li>对于录制的响应和回放的响应，Original response和Replayed response，GoReplay也可以进行比较、监控、分析</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">GoReplay</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/图说//" class="article-tag-list-link color3">图说</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/08/goreplay/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-learning-pyramid" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -204,11 +311,11 @@
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习方法</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">学习方法</a>
         		</li>
       		
 		</ul>
@@ -387,15 +494,15 @@ order by t.longdiff, t.latdiff limit 10;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">演说</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">Redis</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">3.2</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">演说</a>
         		</li>
       		
 		</ul>
@@ -496,6 +603,10 @@ order by t.longdiff, t.latdiff limit 10;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">服务容错</a>
         		</li>
       		 
@@ -505,10 +616,6 @@ order by t.longdiff, t.latdiff limit 10;
       		 
         		<li class="article-tag-list-item">
         			<a href="javascript:void(0)" class="js-tag article-tag-list-link color4">断路器</a>
-        		</li>
-      		 
-        		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
         		</li>
       		
 		</ul>
@@ -652,6 +759,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
           <ul class="article-tag-list" q-show="showTags">
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">图说</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">服务容错</a>
               </li>
              
@@ -661,6 +772,10 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color4">断路器</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">演说</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -676,11 +791,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">演说</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">图说</a>
+                <a href="javascript:void(0)" class="js-tag color4">GoReplay</a>
               </li>
             
             <div class="clearfix"></div>
