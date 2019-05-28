@@ -43,7 +43,7 @@
 <div class="intrude-less">
 	<header id="header" class="inner">
 		<a href="/" class="profilepic">
-			<img src="https://avatars1.githubusercontent.com/u/11221205?s=400&amp;u=b40e2c1b40054dd73898b55fdcdac17222457338&amp;v=4" class="js-avatar">
+			<img src="IMG_2675.JPG" class="js-avatar">
 		</a>
 		<hgroup>
 		  <h1 class="header-author"><a href="/">wenger66</a></h1>
@@ -57,7 +57,7 @@
 	        
 				<li><a href="/tags/图说/">图说</a></li>
 	        
-				<li><a href="/tags/演说/">演说</a></li>
+				<li><a href="/tags/演进/">演说</a></li>
 	        
 			</ul>
 		</nav>
@@ -103,7 +103,7 @@
 	<div class="intrude-less">
 		<header id="header" class="inner">
 			<div class="profilepic">
-				<img src="https://avatars1.githubusercontent.com/u/11221205?s=400&amp;u=b40e2c1b40054dd73898b55fdcdac17222457338&amp;v=4" class="js-avatar">
+				<img src="IMG_2675.JPG" class="js-avatar">
 			</div>
 			<hgroup>
 			  <h1 class="header-author js-header-author">wenger66</h1>
@@ -141,7 +141,7 @@
 		        
 					<li style="width: 33.333333333333336%"><a href="/tags/图说/">图说</a></li>
 		        
-					<li style="width: 33.333333333333336%"><a href="/tags/演说/">演说</a></li>
+					<li style="width: 33.333333333333336%"><a href="/tags/演进/">演说</a></li>
 		        
 				</ul>
 			</nav>
@@ -157,6 +157,118 @@
           </div>
           <div id="js-content" class="content-ll">
             
+  
+    <article id="post-nginx-reload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/05/28/nginx-reload/">nginx-reload</a>
+    </h1>
+  
+
+        
+        <a href="/2019/05/28/nginx-reload/" class="archive-article-date">
+  	<time datetime="2019-05-28T05:44:07.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-05-28</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/2019/05/28/nginx-reload/nginx-reload-1.png" width="500" hegiht="500"></p>
+<p>图片来源：<a href="https://time.geekbang.org/course/intro/138" target="_blank" rel="noopener">https://time.geekbang.org/course/intro/138</a> 极客时间-Nginx核心知识100讲，作者是陶辉</p>
+<pre><code>nginx -s reload 
+</code></pre><p>这条命令可以在不停止nginx的情况下，重新加载新的nginx配置文件，即实现热替换配置。nginx不仅可以实现热替换配置，还可以实现热升级，因此其原理都值得学习</p>
+<pre><code>[root@host-192-168-1-110 nginx]# ps -ef|grep nginx
+root      8414     1  0 11:19 ?        00:00:00 nginx: master process sbin/nginx
+nobody    8415  8414  0 11:19 ?        00:00:00 nginx: worker process
+nobody    8416  8414  0 11:19 ?        00:00:00 nginx: cache manager process
+root     14458 14306  0 13:58 pts/2    00:00:00 grep --color=auto nginx
+</code></pre><p>nginx启动后会有master、worker、cache manager和cache loader等进程，本文只涉及master和worker进程</p>
+<ul>
+<li>nginx master进程负责管理worker进程、监控worker进程、接收信号，是一个管理者，不干实际工作</li>
+<li>nginx worker进程负责处理请求，当然worker子进程也可以接收信号，但一般由master进程转发</li>
+</ul>
+<p>如图</p>
+<ul>
+<li>执行reload命令前，master进程管理了4个worker子进程（绿色W），这些worker子进程是基于<strong>旧的配置</strong></li>
+<li>切换conf/nginx.conf配置文件，执行nginx -s reload命令，该命令会向master进程发送SIGHUP信号</li>
+<li>master进程首先会校验新的配置文件</li>
+<li>master进程校验配置文件成功后，会根据<strong>新的配置</strong>，创建4个新的worker子进程，此时新的worker子进程（黄色W）就可以接收新的请求并处理</li>
+<li>与此同时，master进程会向老的worker子进程（绿色W）发送QUIT信号，即优雅退出</li>
+<li>老的worker子进程（绿色W）关闭监听，并完成正在进行的请求后，结束进程</li>
+</ul>
+<p>基于此，nginx就平滑的完成了配置文件切换，新老worker子进程会并存一段时间，期间新老请求都会得到处理，而且并没有重启nginx 服务器</p>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color1">nginx</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/图说//" class="article-tag-list-link color3">图说</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/05/28/nginx-reload/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
   
     <article id="post-goreplay" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
@@ -179,6 +291,7 @@
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="/2019/05/08/goreplay/goreplay-1.png" width="800" hegiht="800"></p>
+<p>图片来源：<a href="https://github.com/buger/goreplay" target="_blank" rel="noopener">https://github.com/buger/goreplay</a></p>
 <pre><code>GoReplay是一个开源的网络监控工具，可以录制真实的流量，并回放在其他环境中，用来做影子测试，负载测试，或用于对真实的流量进行分析和监控
 官网：https://goreplay.org/
 Github：https://github.com/buger/goreplay
@@ -286,6 +399,7 @@ Github：https://github.com/buger/goreplay
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="/2019/05/06/learning-pyramid/learning-pyramid-1.jpg" width="500" hegiht="500"></p>
+<p>图片来源：未知</p>
 <pre><code>摘自百度百科：学习金字塔是美国缅因州的国家训练实验室研究成果，它用数字形式形象显示了：采用不同的学习方式，学习者在两周以后还能记住内容（平均学习保持率）的多少。它是一种现代学习方式的理论。
 </code></pre><p>这个学习方法很重要，我自己深有体会，因此虽然网上可以查到，我也想在图说中强调下。</p>
 <ul>
@@ -373,7 +487,7 @@ Github：https://github.com/buger/goreplay
         
   
     <h1 itemprop="name">
-      <a class="article-title" href="/2019/05/05/geo-redis/">演说-Redis 3.2新增的Geo功能</a>
+      <a class="article-title" href="/2019/05/05/geo-redis/">演进-Redis 3.2新增的Geo功能</a>
     </h1>
   
 
@@ -387,6 +501,7 @@ Github：https://github.com/buger/goreplay
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="/2019/05/05/geo-redis/geo-1.png" width="500" hegiht="500"></p>
+<p>图片来源：<a href="https://map.baidu.com" target="_blank" rel="noopener">https://map.baidu.com</a></p>
 <p>Redis 3.2版本增加Geo功能，包括6个指令</p>
 <pre><code>GEOADD              //增加一个位置
 GEOHASH             //获取位置的hash值
@@ -494,7 +609,7 @@ order by t.longdiff, t.latdiff limit 10;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">演说</a>
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">演进</a>
         		</li>
       		 
         		<li class="article-tag-list-item">
@@ -514,7 +629,7 @@ order by t.longdiff, t.latdiff limit 10;
 		<ul class="article-tag-list">
 			 
         		<li class="article-tag-list-item">
-        			<a href="/categories/演说//" class="article-tag-list-link color3">演说</a>
+        			<a href="/categories/演进//" class="article-tag-list-link color3">演进</a>
         		</li>
       		
 		</ul>
@@ -574,6 +689,7 @@ order by t.longdiff, t.latdiff limit 10;
     <div class="article-entry" itemprop="articleBody">
       
         <p><img src="/2019/04/29/circuit/circuit-1.png" alt="Circuit State"></p>
+<p>图片来源：未知</p>
 <pre><code>首先需要明确熔断是服务消费者端（或叫客户端）的配置。假设下面的描述都基于A调用B的场景，那么熔断是在A端的配置，而不是B端的配置。断路器可以理解为A与B之间的桥。
 </code></pre><ul>
 <li>断路器默认是<strong>Closed</strong>状态。假设A调用B一直success，那么断路器就一直处于<strong>Closed</strong>状态</li>
@@ -775,7 +891,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">演说</a>
+                <a href="javascript:void(0)" class="js-tag color3">演进</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -787,11 +903,15 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">GoReplay</a>
+              </li>
+             
+              <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color5">学习方法</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GoReplay</a>
+                <a href="javascript:void(0)" class="js-tag color1">nginx</a>
               </li>
             
             <div class="clearfix"></div>
@@ -874,7 +994,7 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
     
     	<section class="tools-section tools-section-me" q-show="aboutme">
   	  	
-  	  		<div class="aboutme-wrap" id="js-aboutme">根据我长期的IT从业经验&lt;br&gt;围绕图来说明一个知识点会更加易于理解，这就是“图说”&lt;br&gt;围绕一个软件的版本演化，就能更加了解开发作者或团队的意图，从而更加理解软件，这就是“演说”&lt;br&gt;谢谢大家</div>
+  	  		<div class="aboutme-wrap" id="js-aboutme">根据我长期的IT从业经验&lt;br&gt;围绕图来说明一个知识点会更加易于理解，这就是“图说”专栏&lt;br&gt;围绕一个软件的版本演化，就能更加了解开发作者或团队的意图，从而更加理解软件，这就是“演进”专栏&lt;br&gt;将知识点形成网络，这就是“联系”专栏&lt;br&gt;谢谢大家</div>
   	  	
     	</section>
     
