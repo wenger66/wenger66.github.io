@@ -158,6 +158,118 @@
           <div id="js-content" class="content-ll">
             
   
+    <article id="post-loadbalance" class="article article-type-post  article-index" itemscope itemprop="blogPost">
+  <div class="article-inner">
+    
+      <header class="article-header">
+        
+  
+    <h1 itemprop="name">
+      <a class="article-title" href="/2019/06/12/loadbalance/">图说-负载均衡分层架构</a>
+    </h1>
+  
+
+        
+        <a href="/2019/06/12/loadbalance/" class="archive-article-date">
+  	<time datetime="2019-06-12T09:40:50.000Z" itemprop="datePublished"><i class="icon-calendar icon"></i>2019-06-12</time>
+</a>
+        
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p><img src="/2019/06/12/loadbalance/loadbalance.png" width="500" hegiht="500"></p>
+<p>图片来源：<a href="https://time.geekbang.org/column/intro/81" target="_blank" rel="noopener">https://time.geekbang.org/column/intro/81</a> 极客时间-从0开始学架构，作者是李运华</p>
+<pre><code>一个朋友问了我一个负载均衡架构的问题。首先有个共识需要达成，下文多次出现请求分发而不是负载均衡，请求分发是不是一定能让每台服务器的负载均衡？回答是不一定，但是如果以负载均衡为目标，一定先要做好请求分发，或者叫任务分发
+</code></pre><p>高性能负载均衡架构一般分为以下几层，如上图</p>
+<ul>
+<li>大量的并发请求首先通过DNS做地理级别的请求分发。例如将请求引向北京DC、广州DC、上海DC，这层的原则是就近分发，不一定能减少下层的请求量</li>
+<li>分发到广州DC的请求通过F5继续分发，分发给广州机房1、广州机房2、广州机房3，或者分发给广州集群1、广州集群2、广州集群3。</li>
+<li>分发到广州集群1的请求通过Nginx继续分发，分发给机器1、机器2、机器3。</li>
+</ul>
+<p>这里涉及几个名词，解释下</p>
+<ul>
+<li>DNS，一种协议，网络世界的地址簿，通过域名查IP</li>
+<li>F5，硬件，价格高昂，支持百万级别的负载均衡，硬件级负载均衡，四层负载均衡</li>
+<li>LVS，Linux的内核模块，支持十万级别的负载均衡，软件级负载均衡，四层负载均衡</li>
+<li>Nginx，NGINX is now part of F5，支持万级别的负载均衡，软件级负载均衡，七层负载均衡，HTTP负载均衡，Nginx目前也支持了四层负载均衡</li>
+</ul>
+<p>软件负载均衡可以工作在四层，也可以工作在七层，硬件负载均衡一般工作在四层。工作在四层适合的应用就比较广了，工作在七层一般就是HTTP应用</p>
+<p>一个日活跃用户1000万的论坛负载均衡架构，如何设计？</p>
+<pre><code>日活是按用户ID来去重，uv是按IP来去重
+</code></pre><p>日活1000万，每个用户平均每天访问100个页面，假设每个页面1个请求（估算不需要精确），那么每天的总请求量就是10亿，那么10亿/24/60/60=11574，即RPS是11574，乘以峰值系数3-5，大概峰值RPS是36000-60000。有了这个估算之后，就可以选择2层负载均衡架构：</p>
+<ul>
+<li>通过DNS做地理级别的请求分发、负载均衡</li>
+<li>通过Nginx做软件级别的请求分发、负载均衡</li>
+</ul>
+
+      
+
+      
+    </div>
+    <div class="article-info article-info-index">
+      
+      
+	<div class="article-tag tagcloud">
+		<i class="icon-price-tags icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color3">图说</a>
+        		</li>
+      		 
+        		<li class="article-tag-list-item">
+        			<a href="javascript:void(0)" class="js-tag article-tag-list-link color5">负载均衡</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+      
+	<div class="article-category tagcloud">
+		<i class="icon-book icon"></i>
+		<ul class="article-tag-list">
+			 
+        		<li class="article-tag-list-item">
+        			<a href="/categories/图说//" class="article-tag-list-link color3">图说</a>
+        		</li>
+      		
+		</ul>
+	</div>
+
+
+      
+        <p class="article-more-link">
+          <a class="article-more-a" href="/2019/06/12/loadbalance/">展开全文 >></a>
+        </p>
+      
+
+      
+      <div class="clearfix"></div>
+    </div>
+  </div>
+</article>
+
+<aside class="wrap-side-operation">
+    <div class="mod-side-operation">
+        
+        <div class="jump-container" id="js-jump-container" style="display:none;">
+            <a href="javascript:void(0)" class="mod-side-operation__jump-to-top">
+                <i class="icon-font icon-back"></i>
+            </a>
+            <div id="js-jump-plan-container" class="jump-plan-container" style="top: -11px;">
+                <i class="icon-font icon-plane jump-plane"></i>
+            </div>
+        </div>
+        
+        
+    </div>
+</aside>
+
+
+
+
+  
     <article id="post-nginx-reload" class="article article-type-post  article-index" itemscope itemprop="blogPost">
   <div class="article-inner">
     
@@ -879,15 +991,11 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">服务容错</a>
+                <a href="javascript:void(0)" class="js-tag color4">GoReplay</a>
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color3">熔断</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">断路器</a>
+                <a href="javascript:void(0)" class="js-tag color5">学习方法</a>
               </li>
              
               <li class="article-tag-list-item">
@@ -903,15 +1011,23 @@ return o(i(t),arguments.length<2?void 0:u(arguments[1]))}})},function(t,n,r){var
               </li>
              
               <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color4">GoReplay</a>
-              </li>
-             
-              <li class="article-tag-list-item">
-                <a href="javascript:void(0)" class="js-tag color5">学习方法</a>
+                <a href="javascript:void(0)" class="js-tag color5">负载均衡</a>
               </li>
              
               <li class="article-tag-list-item">
                 <a href="javascript:void(0)" class="js-tag color1">nginx</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color5">服务容错</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color3">熔断</a>
+              </li>
+             
+              <li class="article-tag-list-item">
+                <a href="javascript:void(0)" class="js-tag color4">断路器</a>
               </li>
             
             <div class="clearfix"></div>
